@@ -6,12 +6,11 @@ import "react-toastify/dist/ReactToastify.css";
 function AddCourse() {
   const addCourseHandler = async (values) => {
     let courseDetails = {
-      coursename: values.courseName,
+      courseName: values.courseName
     };
     console.log(courseDetails);
-    //console.log(values.courseType)
     try {
-      const response = await fetch("http://127.0.0.1:8000/course/", {
+      const response = await fetch("http://localhost:8080/courses", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -19,15 +18,21 @@ function AddCourse() {
         body: JSON.stringify(courseDetails), 
       });
 
-      if (response.ok) {
+      if (response.status===201) {
         // Request was successful
-        const data = await response.json();
-        console.log(data);
         toast.success("Course added successfully");
         setTimeout(() => {
           window.location.reload();
         }, 3000);
-      } else {
+      } 
+      else if (response.status === 400) {
+        // Request was unsuccessful
+        toast.error("Error in adding the course")
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
+      }
+      else {
         // Request failed
         console.error("Error:", response.status);
       }

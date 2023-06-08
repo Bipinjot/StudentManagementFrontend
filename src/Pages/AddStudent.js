@@ -6,16 +6,20 @@ import "react-toastify/dist/ReactToastify.css";
 function AddStudent() {
   const addStudentHandler = async (values) => {
     let studentDetails = {
-      name: values.firstName,
-      familyname: values.familyName,
-      dob: values.dob,
-      email: values.email,
+      firstName: values.firstName,
+      familyName: values.familyName,
+      emailId: values.email,
+      dob: new Date(values.dob).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      })
     };
 
     console.log(studentDetails);
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/user/", {
+      const response = await fetch("http://localhost:8080/users", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -23,16 +27,14 @@ function AddStudent() {
         body: JSON.stringify(studentDetails), // Replace with your actual data
       });
 
-      if (response.ok) {
+      if (response.status===201) {
         // Request was successful
-        const data = await response.json();
-        console.log(data); // Do something with the response data
         toast.success("Student added successfully")
         setTimeout(() => {
           window.location.reload();
         }, 3000);
       }
-      else if (response.status==500) {
+      else if (response.status===400) {
         // Request was error
         toast.error("Email already exists")
         setTimeout(() => {

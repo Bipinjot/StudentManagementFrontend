@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {AiFillEdit} from "react-icons/ai";
+import { AiFillEdit } from "react-icons/ai";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -8,23 +8,28 @@ function StudentList() {
   const deleteStudent = async (row) => {
     //console.log(row);
     try {
-      const response = await fetch("http://127.0.0.1:8000/deleteuser/", {
-        method: "POST",
+      const response = await fetch(`http://localhost:8080/users/${row.id}`, {
+        method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userid: row.shyft_userid.toString() }), // Replace with your actual data
+        }
       });
 
-      if (response.ok) {
+      if (response.status == 200) {
         // Request was successful
-        const data = await response.json();
-        console.log(data); // Do something with the response data
         toast.success("Student deleted successfully")
         setTimeout(() => {
           window.location.reload();
         }, 3000);
-      } else {
+      }
+      else if (response.status === 400) {
+        // Request was unsuccessful
+        toast.error("Student cannot be deleted as student exists in Result")
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
+      }
+      else {
         // Request failed
         console.error("Error:", response.status);
       }
@@ -44,7 +49,7 @@ function StudentList() {
 
     console.log(studentDetails);
     try {
-      const response = await fetch("http://127.0.0.1:8000/user/", {
+      const response = await fetch("http://localhost:8080/users", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -67,7 +72,7 @@ function StudentList() {
   let [studentList, setStudentList] = useState([]);
   useEffect(() => {
     //console.log("check");
-    axios.get("http://127.0.0.1:8000/alluser/").then((res) => {
+    axios.get("http://localhost:8080/users").then((res) => {
       console.log(res.data);
       setStudentList(res.data);
     });
@@ -98,23 +103,18 @@ function StudentList() {
               <tbody>
                 {studentList.map((row, index) => (
                   <tr
-                    className={`${
-                      index % 2 === 0 ? "bg-gray-100" : "bg-white"
-                    }`}
+                    className={`${index % 2 === 0 ? "bg-gray-100" : "bg-white"
+                      }`}
                     key={index}
                   >
                     <td className="w-[400px] justify-center items-center p-2">
-                      {row.shyft_name} {row.shyft_familyname}
+                      {row.name} {row.familyName}
                     </td>
                     <td className="w-[200px] justify-center items-center p-2">
-                      {new Date(row.shyft_dob).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "2-digit",
-                        day: "2-digit",
-                      })}
+                      {row.dob}
                     </td>
                     <td className="w-[200px] justify-center items-center p-2">
-                      {row.shyft_email}
+                      {row.emailId}
                     </td>
                     {/* <td
                       className="w-[50px] justify-center items-center p-2"
@@ -143,7 +143,7 @@ function StudentList() {
           </div>
         ) : null}
       </div>
-      <ToastContainer/>
+      <ToastContainer />
     </>
   );
 }

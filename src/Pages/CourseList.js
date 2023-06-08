@@ -7,23 +7,29 @@ function CourseList() {
   const deleteCourse = async (row) => {
     console.log(row);
     try {
-      const response = await fetch("http://127.0.0.1:8000/deletecourse/", {
-        method: "POST",
+      const response = await fetch(`http://localhost:8080/courses/${row.id}`, {
+        method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ courseid: row.shyft_courseid }), // Replace with your actual data
+        }
       });
 
-      if (response.ok) {
+      if (response.status === 200) {
+        console.log("Deleted successfully")
         // Request was successful
-        const data = await response.json();
-        console.log(data); // Do something with the response data
         toast.success("Course deleted successfully")
         setTimeout(() => {
           window.location.reload();
         }, 3000);
-      } else {
+      }
+      else if (response.status === 400) {
+        // Request was unsuccessful
+        toast.error("Course cannot be deleted as course exists in Result")
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
+      }
+      else {
         // Request failed
         console.error("Error:", response.status);
       }
@@ -34,7 +40,7 @@ function CourseList() {
   let [courseList, setCourseList] = useState([]);
   useEffect(() => {
     //console.log("check");
-    axios.get("http://127.0.0.1:8000/allcourse/").then((res) => {
+    axios.get("http://localhost:8080/courses").then((res) => {
       console.log(res.data);
       setCourseList(res.data);
     });
@@ -67,7 +73,7 @@ function CourseList() {
                     key={index}
                   >
                     <td className="w-[400px] justify-center items-center p-2">
-                      {row.shyft_coursename}
+                      {row.courseName}
                     </td>
                     <td
                       className="w-[50px] justify-center items-center p-2"
