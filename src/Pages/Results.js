@@ -44,8 +44,26 @@ function Results() {
     axios
       .get("http://localhost:8080/results")
       .then((res) => {
+        const sortedData = res.data.sort((a, b) => {
+          const courseNameComparison = a.course.courseName.localeCompare(b.course.courseName);
+          if (courseNameComparison !== 0) {
+            return courseNameComparison; // Sort by firstName if not equal
+          }
+          // Sort by Grades
+          const gradeComparison = a.grade.localeCompare(b.grade);
+          if (gradeComparison !== 0) {
+            return gradeComparison; // Sort by firstName if not equal
+          }
+          // Sort by First Name
+          const firstNameComparison = a.user.firstName.localeCompare(b.user.firstName);
+          if (firstNameComparison !== 0) {
+            return firstNameComparison;
+          }
+          // Sort by familyName if firstName is equal
+          return a.user.familyName.localeCompare(b.user.familyName);
+        });
         console.log(res.data);
-        setResultList(res.data);
+        setResultList(sortedData);
       });
   }, []);
 
@@ -90,7 +108,7 @@ function Results() {
           </div>
         ) : null}
       </div>
-      <ToastContainer/>
+      <ToastContainer />
     </>
   )
 }

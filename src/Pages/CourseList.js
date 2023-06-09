@@ -38,8 +38,9 @@ function CourseList() {
   useEffect(() => {
     //console.log("check");
     axios.get("http://localhost:8080/courses").then((res) => {
+      const sortedData = res.data.sort((a, b) => a.courseName.localeCompare(b.courseName));
       console.log(res.data);
-      setCourseList(res.data);
+      setCourseList(sortedData);
     });
   }, []);
   const columns = [

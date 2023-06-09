@@ -122,9 +122,10 @@ function AddResult()
                   validate={validateField}
                 >
                   <option value="">Select...</option>
-                  {options1.map((option) => (
+                  {options1.sort((a, b) => a.firstName.localeCompare(b.firstName))
+                  .map((option) => (
                     <option key={option.id} value={option.id}>
-                      {option.firstName + " "+ option.familyName}
+                      {option.firstName}{option.familyName ? ` ${option.familyName}` : ''}
                     </option>
                   ))}
                 </Field>
@@ -144,7 +145,9 @@ function AddResult()
                   className="w-[500px] h-10 bg-none rounded-md outline-slate-50 border-slate-500 border-2 p-2"
                 >
                   <option value="">Select...</option>
-                  {options2.map((option) => (
+                  {options2
+                  .sort((a, b) => a.courseName.localeCompare(b.courseName))
+                  .map((option) => (
                     <option
                       key={option.id}
                       value={option.id}

@@ -70,8 +70,16 @@ function StudentList() {
   useEffect(() => {
     //console.log("check");
     axios.get("http://localhost:8080/users").then((res) => {
-      console.log(res.data);
-      setStudentList(res.data);
+      const sortedData = res.data.sort((a, b) => {
+        const firstNameComparison = a.firstName.localeCompare(b.firstName);
+        if (firstNameComparison !== 0) {
+          return firstNameComparison;
+        }
+        // Sort by familyName if firstName is equal
+        return a.familyName.localeCompare(b.familyName);
+      });
+      console.log(sortedData);
+      setStudentList(sortedData);
     });
   }, []);
   const columns = [
