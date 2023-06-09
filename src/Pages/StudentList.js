@@ -36,17 +36,18 @@ function StudentList() {
   };
 
   const editStudent = async (row) => {
+    console.log(row);
     let studentDetails = {
-      id: row.shyft_userid,
-      name: "Updated name",
-      familyname: "Updated Family name",
-      dob: "2020-03-20",
-      email: "updatedEmail@test.com",
+      id: row.id,
+      firstName: "Alex",
+      familyName: "Bloos",
+      dob: "11/11/2011",
+      emailId: "bkhara1@gmail.com",
     };
 
     console.log(studentDetails);
     try {
-      const response = await fetch("http://localhost:8080/users", {
+      const response = await fetch("http://localhost:8080/users/", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -54,10 +55,17 @@ function StudentList() {
         body: JSON.stringify(studentDetails), // Replace with your actual data
       });
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         toast.success("Student details updated successfully");
-        // Refresh the student list or perform any other necessary actions
-      } else {
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
+      } 
+      else if (response.status===400) {
+        // Request was error
+        toast.error("Error in updating user")
+      }
+      else {
         console.error("Error:", response.status);
       }
     } catch (error) {
@@ -121,7 +129,7 @@ function StudentList() {
                     <td className="w-[200px] justify-center items-center p-2">
                       {row.emailId}
                     </td>
-                    {/* <td
+                    <td
                       className="w-[50px] justify-center items-center p-2"
                       onClick={() => {
                         editStudent(row);
@@ -130,7 +138,7 @@ function StudentList() {
                       <button className="bg-blue-500 rounded-full text-neutral-100 font-bold py-2 px-3 rounded-full">
                       <AiFillEdit className="text-2xl text-neutral-100"/>
                       </button>
-                    </td> */}
+                    </td>
                     <td
                       className="w-[50px] justify-center items-center p-2"
                       onClick={() => {

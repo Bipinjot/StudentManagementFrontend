@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { AiFillEdit } from "react-icons/ai";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -31,6 +32,47 @@ function Results() {
       }
       else {
         // Request failed
+        console.error("Error:", response.status);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const editResult = async (row) => {
+    console.log(row);
+    let resultDetails = {
+      id: row.id,
+      grade: "C",
+      user: {
+        id: row.user.id
+      },
+      course: {
+        id: row.course.id
+      }
+    };
+
+    console.log(resultDetails);
+    try {
+      const response = await fetch("http://localhost:8080/results/", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(resultDetails), // Replace with your actual data
+      });
+
+      if (response.status === 200) {
+        toast.success("Result details updated successfully");
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
+      } 
+      else if (response.status===400) {
+        // Request was error
+        toast.error("Error in updating result")
+      }
+      else {
         console.error("Error:", response.status);
       }
     } catch (error) {
@@ -94,6 +136,16 @@ function Results() {
                     </td>
                     <td className="w-[400px] justify-center items-center p-2">{row.user.firstName} {row.user.familyName}</td>
                     <td className="w-[100px] justify-center items-center p-2">{row.grade}</td>
+                    <td
+                      className="w-[50px] justify-center items-center p-2"
+                      onClick={() => {
+                        editResult(row);
+                      }}
+                    >
+                      <button className="bg-blue-500 rounded-full text-neutral-100 font-bold py-2 px-3 rounded-full">
+                      <AiFillEdit className="text-2xl text-neutral-100"/>
+                      </button>
+                    </td>
                     <td className="w-[50px] justify-center items-center p-2"
                       onClick={() => {
                         deleteResult(row);

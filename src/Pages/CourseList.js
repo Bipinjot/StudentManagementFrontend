@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { AiFillEdit } from "react-icons/ai";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -28,6 +29,40 @@ function CourseList() {
       }
       else {
         // Request failed
+        console.error("Error:", response.status);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+  const editCourse = async (row) => {
+    console.log(row);
+    let courseDetails = {
+      id: row.id,
+      courseName: "Art"
+    };
+
+    console.log(courseDetails);
+    try {
+      const response = await fetch("http://localhost:8080/courses/", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(courseDetails), // Replace with your actual data
+      });
+
+      if (response.status === 201) {
+        toast.success("Course details updated successfully");
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
+      } 
+      else if (response.status===400) {
+        // Request was error
+        toast.error("Error in updating course")
+      }
+      else {
         console.error("Error:", response.status);
       }
     } catch (error) {
@@ -72,6 +107,16 @@ function CourseList() {
                   >
                     <td className="w-[400px] justify-center items-center p-2">
                       {row.courseName}
+                    </td>
+                    <td
+                      className="w-[50px] justify-center items-center p-2"
+                      onClick={() => {
+                        editCourse(row);
+                      }}
+                    >
+                      <button className="bg-blue-500 rounded-full text-neutral-100 font-bold py-2 px-3 rounded-full">
+                      <AiFillEdit className="text-2xl text-neutral-100"/>
+                      </button>
                     </td>
                     <td
                       className="w-[50px] justify-center items-center p-2"
