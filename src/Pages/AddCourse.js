@@ -28,9 +28,6 @@ function AddCourse() {
       else if (response.status === 400) {
         // Request was unsuccessful
         toast.error("Error in adding the course")
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
       }
       else {
         // Request failed

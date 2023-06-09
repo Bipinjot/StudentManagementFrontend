@@ -24,16 +24,10 @@ function Results() {
       else if (response.status === 204) {
         // Request was unsuccessful
         toast.error("No result Found")
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
       }
       else if (response.status === 400) {
         // Request was unsuccessful
         toast.error("Error in deleting result")
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
       }
       else {
         // Request failed

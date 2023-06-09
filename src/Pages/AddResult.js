@@ -81,9 +81,6 @@ function AddResult()
     else if (response.status === 400) {
       // Request was unsuccessful
       toast.error("Error in adding a new result")
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
     }
     else {
       // Request failed

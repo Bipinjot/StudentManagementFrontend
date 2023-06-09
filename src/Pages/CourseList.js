@@ -25,9 +25,6 @@ function CourseList() {
       else if (response.status === 400) {
         // Request was unsuccessful
         toast.error("Course cannot be deleted as course exists in Result")
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
       }
       else {
         // Request failed

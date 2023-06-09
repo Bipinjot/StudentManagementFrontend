@@ -37,9 +37,6 @@ function AddStudent() {
       else if (response.status===400) {
         // Request was error
         toast.error("Email already exists")
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
       } else {
         // Request failed
         console.error("Error:", response.status);

@@ -25,9 +25,6 @@ function StudentList() {
       else if (response.status === 400) {
         // Request was unsuccessful
         toast.error("Student cannot be deleted as student exists in Result")
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
       }
       else {
         // Request failed
