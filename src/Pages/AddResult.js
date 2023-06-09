@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field } from "formik";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const MyComponent = () => {
+function AddResult()
+{
   const [options1, setOptions1] = useState([]);
   const [options2, setOptions2] = useState([]);
 
   // Function to fetch options for dropdown 1
   const fetchOptions1 = () => {
-    fetch("http://127.0.0.1:8000/alluser/")
+    fetch("http://localhost:8080/users")
       .then((response) => response.json())
       .then((data) => {
         setOptions1(data);
@@ -21,7 +22,7 @@ const MyComponent = () => {
 
   // Function to fetch options for dropdown 2
   const fetchOptions2 = () => {
-    fetch("http://127.0.0.1:8000/allcourse/")
+    fetch("http://localhost:8080/courses")
       .then((response) => response.json())
       .then((data) => {
         setOptions2(data);
@@ -30,8 +31,8 @@ const MyComponent = () => {
         console.error(error);
       });
   };
-  // console.log(options1);
-  // console.log(options2);
+  console.log(options1);
+  console.log(options2);
   // Call fetchOptions1 and fetchOptions2 when the component mounts
   useEffect(() => {
     fetchOptions1();
@@ -40,7 +41,7 @@ const MyComponent = () => {
 
   // Function to handle form submission
   // Function to handle form submission
-  const handleSubmit = (values, { setSubmitting }) => {
+  const handleSubmit = async (values, { setSubmitting }) => {
     // Perform validation
     if (!values.dropdown1 || !values.dropdown2 || !values.score) {
       alert("Please select options for all dropdowns."); // You can use other form validation techniques as well
@@ -50,35 +51,48 @@ const MyComponent = () => {
 
     // Prepare the data for the POST request
     const data = {
-      username: values.dropdown1, // Use the key instead of value
-      coursename: values.dropdown2, // Use the key instead of value
-      score: values.score,
+      grade: values.score,
+      user: {
+        id: values.dropdown1
+      },
+      course: {
+        id: values.dropdown2
+      }
     };
+    console.log(values);
     console.log(data);
 
     // Send the POST request
-    fetch("http://127.0.0.1:8000/result/", {
+    try{
+      const response =await fetch("http://localhost:8080/results", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        // Handle the API response
-        console.log(result);
-        toast.success("Result deleted successfully");
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {
-        setSubmitting(false);
-      });
+    });
+    if (response.status===201) {
+      // Request was successful
+      toast.success("Result added successfully");
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
+    } 
+    else if (response.status === 400) {
+      // Request was unsuccessful
+      toast.error("Error in adding a new result")
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
+    }
+    else {
+      // Request failed
+      console.error("Error:", response.status);
+    }
+  }
+    catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   const validateField = (values) => {
@@ -112,8 +126,8 @@ const MyComponent = () => {
                 >
                   <option value="">Select...</option>
                   {options1.map((option) => (
-                    <option key={option.shyft_userid} value={option.shyft_name}>
-                      {option.shyft_name}
+                    <option key={option.id} value={option.id}>
+                      {option.firstName + " "+ option.familyName}
                     </option>
                   ))}
                 </Field>
@@ -135,10 +149,10 @@ const MyComponent = () => {
                   <option value="">Select...</option>
                   {options2.map((option) => (
                     <option
-                      key={option.shyft_courseid}
-                      value={option.shyft_coursename}
+                      key={option.id}
+                      value={option.id}
                     >
-                      {option.shyft_coursename}
+                      {option.courseName}
                     </option>
                   ))}
                 </Field>
@@ -183,4 +197,4 @@ const MyComponent = () => {
   );
 };
 
-export default MyComponent;
+export default AddResult;
