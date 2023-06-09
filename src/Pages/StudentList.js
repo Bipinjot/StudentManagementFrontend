@@ -105,7 +105,7 @@ function StudentList() {
                     key={index}
                   >
                     <td className="w-[400px] justify-center items-center p-2">
-                      {row.name} {row.familyName}
+                      {row.firstName} {row.familyName}
                     </td>
                     <td className="w-[200px] justify-center items-center p-2">
                       {row.dob}
